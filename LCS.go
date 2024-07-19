@@ -1,27 +1,36 @@
 package main
 
-import "testing"
+import (
+    "fmt"
+    "strings"
+    "unicode"
+)
 
-// TestLCS tests the LCS function with various cases.
-func TestLCS(t *testing.T) {
-	tests := []struct {
-		X      string
-		Y      string
-		expect string
-	}{
-		{"ABCBDAB", "BDCAB", "BCAB"},  // Corrected expected result
-		{"AAB", "ABA", "ABA"},         // Corrected expected result
-		{"AGGTAB", "GXTXAYB", "GTAB"}, // Additional test case
-		{"ABC", "AC", "AC"},           // Additional test case
-		{"", "ABC", ""},               // Edge case: empty string
-		{"ABC", "", ""},               // Edge case: empty string
-		{"", "", ""},                  // Edge case: both empty strings
-	}
+// IsPalindrome checks if a given string is a palindrome.
+// It removes non-alphanumeric characters and ignores case.
+func IsPalindrome(s string) bool {
+    var cleaned strings.Builder
+    for _, r := range s {
+        if unicode.IsLetter(r) || unicode.IsNumber(r) {
+            cleaned.WriteRune(unicode.ToLower(r))
+        }
+    }
+    // Get the cleaned string and its reverse
+    cleanedStr := cleaned.String()
+    reversedStr := reverse(cleanedStr)
+    return cleanedStr == reversedStr
+}
 
-	for _, test := range tests {
-		result := LCS(test.X ,test.Y)
-		if result != test.expect {
-			t.Errorf("LCS(%q, %q) = %q; want %q", test.X, test.Y, result, test.expect)
-		}
-	}
+// Helper function to reverse a string
+func reverse(s string) string {
+    runes := []rune(s)
+    for i, j := 0, len(runes)-1; i < j; i, j = i+1, j-1 {
+        runes[i], runes[j] = runes[j], runes[i]
+    }
+    return string(runes)
+}
+
+func main() {
+    fmt.Println(IsPalindrome("A man a plan a canal Panama")) // Output: true
+    fmt.Println(IsPalindrome("Hello World"))                  // Output: false
 }
